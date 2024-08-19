@@ -1,0 +1,151 @@
+﻿@model List<DinhHoKimXuyen_2122110457.Models.CartModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+<section class="section-content padding-y">
+    <div class="container">
+        <div class="row">
+            <main class="col-md-9">
+                <div class="card">
+                    <table class="table table-borderless table-shopping-cart">
+                        <thead class="text-muted">
+                            <tr class="small text-uppercase">
+                                <th scope="col">Product</th>
+                                <th scope="col" width="120">Quantity</th>
+                                <th scope="col" width="120">Price</th>
+                                <th scope="col" class="text-right" width="200"> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    if (item.Product != null)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <figure class="itemside">
+                                                    <div class="aside"><img src="~/Content/images/products/@item.Product.image" class="img-sm" alt="@item.Product.name"></div>
+                                                    <figcaption class="info">
+                                                        <a href="@Url.Action("Details", "Product", new { id = item.Product.id })" class="title text-dark">@item.Product.name</a>
+                                                        <p class="text-muted small">Category: @item.Product.category_id, Brand: @item.Product.brand_id</p>
+                                                    </figcaption>
+                                                </figure>
+                                            </td>
+                                            <td>
+                                                <select class="form-control quantity" data-id="@item.Product.id">
+                                                    @for (int i = 1; i <= 10; i++)
+                                                    {
+                                                        <option value="@i" @(i == item.Quantity ? "selected" : "")>@i</option>
+                                                    }
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <div class="price-wrap">
+                                                    <var class="price">@((item.Product.price * item.Quantity).ToString())</var>
+                                                    @if (item.Product.pricesale.HasValue)
+                                                    {
+                                                <small class="text-muted">
+                                                    <del>@((item.Product.pricesale * item.Quantity).ToString())</del>
+                                                </small>}
+                                                </div> <!-- price-wrap .// -->
+                                            </td>
+                                            <td class="text-right">
+                                                <a href="javascript:void(0);" class="btn btn-light btn-round remove-item" data-id="@item.Product.id">Xóa</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">Giỏ hàng của bạn chưa có sản phẩm</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="card-body border-top">
+                        <a href="@Url.Action("Payment", "Cart")" id="makePurchaseButton" class="btn btn-info float-md-right makePurchaseButton">Đặt hàng <i class="fa fa-chevron-right"></i></a>
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-light"> <i class="fa fa-chevron-left"></i> Tiếp tục mua hàng</a>
+                    </div>
+                </div> <!-- card.// -->
+
+                <div class="alert alert-success mt-3">
+                    <p class="icontext"><i class="icon text-success fa fa-truck"></i> Free Delivery within 1-2 weeks</p>
+                </div>
+
+            </main> <!-- col.// -->
+            <aside class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <dl class="dlist-align">
+                            <dt>Total price:</dt>
+                            <dd class="text-right">USD @ViewBag.TotalPrice</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                            <dt>Discount:</dt>
+                            <dd class="text-right">USD @ViewBag.Discount</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                            <dt>Total:</dt>
+                            <dd class="text-right h5"><strong>USD @ViewBag.GrandTotal</strong></dd>
+                        </dl>
+                        <hr>
+                        <p class="text-center mb-3">
+                            <img src="~/Content/images/misc/payments.png" height="26">
+                        </p>
+                    </div> <!-- card-body.// -->
+                </div>  <!-- card .// -->
+            </aside>
+        </div>
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Handle removing an item from the cart
+        $(".remove-item").click(function () {
+            var id = $(this).data("id");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Remove", "Cart")',
+                data: JSON.stringify({ id: id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    alert(response.Message);
+                    location.reload();
+                },
+                error: function () {
+                    alert("Error while removing item from cart");
+                }
+            });
+        });
+
+        // Handle updating the quantity of an item in the cart
+        $(".quantity").change(function () {
+            var id = $(this).data("id");
+            var quantity = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateQuantity", "Cart")',
+                data: JSON.stringify({ id: id, quantity: quantity }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    alert(response.Message);
+                    location.reload(); // Reload to update the price and totals
+                },
+                error: function () {
+                    alert("Error while updating quantity");
+                }
+            });
+        });
+    });
+</script>

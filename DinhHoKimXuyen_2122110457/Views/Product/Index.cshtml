@@ -1,0 +1,195 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+@model IPagedList<DinhHoKimXuyen_2122110457.Models.product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .pagination {
+        display: inline-block;
+        padding-left: 0;
+        margin: 20px 0;
+        border-radius: 4px;
+    }
+
+        .pagination > li {
+            display: inline;
+        }
+
+            .pagination > li > a,
+            .pagination > li > span {
+                position: relative;
+                float: left;
+                padding: 6px 12px;
+                margin-left: -1px;
+                line-height: 1.428571429;
+                text-decoration: none;
+                background-color: #ffffff;
+                border: 1px solid #dddddd;
+            }
+
+            .pagination > li:first-child > a,
+            .pagination > li:first-child > span {
+                margin-left: 0;
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
+            }
+
+            .pagination > li:last-child > a,
+            .pagination > li:last-child > span {
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 4px;
+            }
+
+    .pagination-sm > li:first-child > a,
+    .pagination-sm > li:first-child > span {
+        border-bottom-left-radius: 3px;
+        border-top-left-radius: 3px;
+    }
+
+    .pagination-sm > li:last-child > a,
+    .pagination-sm > li:last-child > span {
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+
+    .pager {
+        padding-left: 0;
+        margin: 20px 0;
+        text-align: center;
+        list-style: none;
+    }
+
+        .pager:before,
+        .pager:after {
+            display: table;
+            content: " ";
+        }
+
+        .pager:after {
+            clear: both;
+        }
+
+        .pager li {
+            display: inline;
+        }
+
+            .pager li > a,
+            .pager li > span {
+                display: inline-block;
+                padding: 5px 14px;
+                background-color: #ffffff;
+                border: 1px solid #dddddd;
+                border-radius: 15px;
+            }
+
+                .pager li > a:hover,
+                .pager li > a:focus {
+                    text-decoration: none;
+                    background-color: #eeeeee;
+                }
+
+        .pager .next > a,
+        .pager .next > span {
+            float: right;
+        }
+
+        .pager .previous > a,
+        .pager .previous > span {
+            float: left;
+        }
+
+        .pager .disabled > a,
+        .pager .disabled > a:hover,
+        .pager .disabled > a:focus,
+        .pager .disabled > span {
+            color: #999999;
+            cursor: not-allowed;
+            background-color: #ffffff;
+        }
+
+</style>
+<section class="section-content padding-y">
+    <div class="container">
+        <header class="my-3">
+            <div class="form-inline">
+                <strong class="mr-md-auto">@Model.Count Items found</strong>
+                <form method="get" action="@Url.Action("Index", "Product")" class="form-inline">
+                    <select name="sortOrder" class="mr-2 form-control">
+                        <option value="latest" @(ViewBag.SortOrder == "latest" ? "selected" : "")>Latest items</option>
+                        <option value="oldest" @(ViewBag.SortOrder == "oldest" ? "selected" : "")>Oldest items</option>
+                        <option value="priceAsc" @(ViewBag.SortOrder == "priceAsc" ? "selected" : "")>Price: Low to High</option>
+                        <option value="priceDesc" @(ViewBag.SortOrder == "priceDesc" ? "selected" : "")>Price: High to Low</option>
+                    </select>
+
+                    <input type="hidden" name="searchType" value="@ViewBag.SearchType" />
+                    <input type="hidden" name="query" value="@ViewBag.Query" />
+                    <button type="submit" class="btn btn-primary">Sort</button>
+                </form>
+            </div>
+        </header><!-- sect-heading -->
+
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-md-3 col-6">
+                    <figure class="card card-product-grid">
+                        <div class="img-wrap">
+                            <img src="@Url.Content("~/Content/images/products/" + product.image)" alt="@product.name">
+                        </div>
+                        <figcaption class="info-wrap">
+                            <a href="@Url.Action("Details", "Product", new { id = product.id })" class="title mb-2">@product.name</a>
+                            <div class="price-wrap">
+                                @if (product.pricesale.HasValue)
+                                {
+                                    <span class="price">
+                                        $@product.pricesale.Value.ToString("F2")
+                                    </span>
+                                    <small class="text-muted">
+                                        <del>$@product.price.ToString("F2")</del>
+                                    </small>
+                                }
+                                else
+                                {
+                                    <span class="price">
+                                        $@product.price.ToString("F2")
+                                    </span>
+                                }
+                                <small class="text-muted">/per item</small>
+                            </div> <!-- price-wrap.// -->
+
+                            <label class="custom-control mb-3 custom-checkbox">
+                                <input type="checkbox" class="custom-control-input">
+                                <div class="custom-control-label">Add to compare</div>
+                            </label>
+
+                            <a href="@Url.Action("Details", "Product", new { id = product.id })" class="btn btn-outline-primary">
+                                <i class="fa fa-envelope"></i> Xem Thêm
+                            </a>
+                        </figcaption>
+                    </figure>
+                </div> <!-- col.// -->
+            }
+
+            <!-- Pagination -->
+        <p>
+            Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        </p>
+            <nav class="mb-4" aria-label="Page navigation">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.SortOrder}), new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded  })
+            </nav>
+
+
+
+        </div> <!-- row end.// -->
+
+        <div class="box text-center">
+            <p>Did you find what you were looking for?</p>
+            <a href="#" class="btn btn-light">Yes</a>
+            <a href="#" class="btn btn-light">No</a>
+        </div>
+
+    </div> <!-- container .// -->
+</section>

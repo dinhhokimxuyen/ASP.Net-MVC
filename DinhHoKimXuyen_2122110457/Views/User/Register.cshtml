@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+}
+<section class="section-content padding-y">
+    <!-- ============================ COMPONENT REGISTER   ================================= -->
+    <div class="card mx-auto" style="max-width:520px; margin-top:40px;">
+        <article class="card-body">
+            <header class="mb-4"><h4 class="card-title">Sign up</h4></header>
+            <form asp-action="Register" asp-controller="UsersController" method="post">
+                @Html.AntiForgeryToken()
+                <div class="form-row">
+                    <div class="col form-group">
+                        <label>Tên</label>
+                        <input type="text" class="form-control" name="firstname" placeholder="">
+                    </div> <!-- form-group end.// -->
+                    <div class="col form-group">
+                        <label>Họ</label>
+                        <input type="text" class="form-control" name="lastname" placeholder="">
+                    </div> <!-- form-group end.// -->
+                </div> <!-- form-row end.// -->
+                <div class="form-group">
+                    <label>Tên người dùng</label>
+                    <input type="text" class="form-control" name="username" placeholder="">
+
+                </div> <!-- form-group end.// -->
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" name="email" placeholder="">
+                    @*<small class="form-text text-muted">We'll never share your email with anyone else.</small>*@
+                </div> <!-- form-group end.// -->
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input type="text" class="form-control" name="phone" placeholder="">
+                </div> <!-- form-group end.// -->
+                <div class="form-group">
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input class="custom-control-input" checked="" type="radio" name="gender" value="Male">
+                        <span class="custom-control-label"> Nam </span>
+                    </label>
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input class="custom-control-input" type="radio" name="gender" value="Female">
+                        <span class="custom-control-label"> Nữ </span>
+                    </label>
+                </div> <!-- form-group end.// -->
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Mật khẩu</label>
+                        <input class="form-control" type="password" name="password">
+                    </div> <!-- form-group end.// -->
+                    <div class="form-group col-md-6">
+                        <label>Nhập lại mật khẩu</label>
+                        <input class="form-control" type="password" name="confirm_password">
+                    </div> <!-- form-group end.// -->
+                </div>
+                <div class="form-group">
+                    <label>Địa chỉ</label>
+                    <input type="text" class="form-control" name="address" placeholder="">
+                </div> <!-- form-group end.// -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block"> Đăng kí </button>
+                </div> <!-- form-group// -->
+
+                <div class="form-group">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" checked="">
+                        <div class="custom-control-label">Tôi đồng ý với  <a href="#"></a>các điều khoản và điều kiện </div>
+                    </label>
+                </div> <!-- form-group end.// -->
+
+            </form>
+        </article><!-- card-body.// -->
+    </div> <!-- card .// -->
+    <p class="text-center mt-4">Bạn đã có tài khoản?<a href="@Url.Action("Login", "User", new { area = "" })">Đăng nhập</a></p>
+    <br><br>
+    <!-- ============================ COMPONENT REGISTER  END.// ================================= -->
+</section>

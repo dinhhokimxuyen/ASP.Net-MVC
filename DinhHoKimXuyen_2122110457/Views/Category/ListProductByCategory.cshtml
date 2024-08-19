@@ -1,0 +1,49 @@
+﻿
+@model IEnumerable<DinhHoKimXuyen_2122110457.Models.product>
+
+<section class="section-content padding-y">
+    <div class="container">
+        <div class="row no-gutters items-wrap">
+            @foreach (var product in Model)
+            {
+                <div class="col-md col-6">
+                    <figure class="card-product-grid card-sm">
+                        <a href="@Url.Action("Details", "Product", new { id = product.id })" class="img-wrap">
+                            <img src="@Url.Content("~/Content/images/products/" + product.image)" alt="@product.name">
+                        </a>
+                        <div class="text-wrap p-3">
+                            <a href="@Url.Action("Details", "Product", new { id = product.id })" class="title">@product.name</a>
+                            @if (product.pricesale.HasValue)
+                            {
+                                <span class="badge badge-danger">
+                                    -@Math.Round((1 - (product.pricesale.Value / product.price)) * 100, 0)%
+                                </span>
+                            }
+                        </div>
+                    </figure>
+                </div> <!-- col.// -->
+            }
+        </div>
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+<!-- ========================= SECTION SUBSCRIBE  ========================= -->
+<section class="padding-y-lg bg-light border-top">
+    <div class="container">
+        <p class="pb-2 text-center">Delivering the latest product trends and industry news straight to your inbox</p>
+        <div class="row justify-content-md-center">
+            <div class="col-lg-4 col-sm-6">
+                <form class="form-row">
+                    <div class="col-8">
+                        <input class="form-control" placeholder="Your Email" type="email">
+                    </div> <!-- col.// -->
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-block btn-warning"> <i class="fa fa-envelope"></i> Subscribe </button>
+                    </div> <!-- col.// -->
+                </form>
+                <small class="form-text">We’ll never share your email address with a third-party. </small>
+            </div> <!-- col-md-6.// -->
+        </div>
+    </div>
+</section>
+<!-- ========================= SECTION SUBSCRIBE END// ========================= -->
